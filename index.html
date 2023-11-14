@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Data Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Data Visualization Dashboard</h1>
+        </header>
+        <aside class="dashboard-sidebar">
+            <div class="file-upload-container">
+                <h2>Upload Data</h2>
+                <input type="file" id="fileUpload" accept=".csv, .json">
+            </div>
+            <div class="filter-container">
+                <h2>Filters</h2>
+                <!-- Filters will be dynamically added here -->
+            </div>
+        </aside>
+        <main class="dashboard-main">
+            <div class="chart-container" id="barChart">
+                <h2>Bar Chart</h2>
+                <svg width="500" height="500"></svg>
+                <!-- Bar chart goes here -->
+            </div>
+            <div class="chart-container" id="lineChart">
+                <h2>Line Chart</h2>
+                <svg width="500" height="500"></svg>
+                <!-- Line chart goes here -->
+            </div>
+            <div class="chart-container" id="pieChart">
+                <h2>Pie Chart</h2>
+                <svg width="500" height="500"></svg>
+                <!-- Pie chart goes here -->
+            </div>
+            <div class="chart-container" id="scatterPlot">
+                <h2>Scatter Plot</h2>
+                <svg width="500" height="500"></svg>
+                <!-- Scatter plot goes here -->
+            </div>
+            <div class="chart-container" id="heatMap">
+                <h2>Heat Map</h2>
+                <svg width="500" height="500"></svg>
+                <!-- Heat map goes here -->
+            </div>
+            <div class="chart-container" id="areaPlot">
+                <h2>Area Plot</h2>
+                <svg width="500" height="500"></svg>
+                <!-- Area plot goes here -->
+            </div>
+            <div class="chart-container" id="boxPlot">
+                <h2>Box Plot</h2>
+                <svg width="500" height="500"></svg>
+                <!-- Box plot goes here -->
+            </div>
+            <div class="chart-container" id="realTimeData">
+                <h2>Real Time Data</h2>
+                <svg></svg>
+                <!-- Real time data visualization goes here -->
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/d3-interpolate-path/build/d3-interpolate-path.js"></script>
+</body>
+</html>
