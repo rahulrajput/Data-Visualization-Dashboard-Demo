@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // initializeCharts();
     simulateRealTimeData();
 });
 
 let charts = [];
+
 
 function registerChart(updateFunction, svgSelector, dataFunction) {
     charts.push({ updateFunction, svgSelector, dataFunction, data: dataFunction() });
@@ -26,81 +26,19 @@ function generalUpdate() {
 
 window.addEventListener('resize', generalUpdate);
 
-function initializeCharts() {
-    // Initialize each chart with sample data
-    // Sample data should be replaced with actual data
-    generateBarChart();
-    generateLineChart();
-    generatePieChart();
-    generateScatterPlot();
-    generateHeatMap();
-    // generateAreaPlot();
-    generateBoxPlot();
-}
-
-// Sample chart generation functions (to be replaced with actual implementations)
-function generateBarChart() {
-    const sampleData = Array.from({ length: 5 }, () => Math.floor(Math.random() * 100) + 1);
-
-    updateBarChart(sampleData);
-}
-
-
-function generateLineChart() {
-    const sampleData = Array.from({ length: 20 }, (_, i) => ({ x: i, y: Math.random() * 100 }));
-
-    updateLineChart(sampleData);
-}
-
-
-function generatePieChart() {
-    const sampleData = Array.from({ length: 5 }, (_, i) => ({
-        label: `Item ${i + 1}`,
-        value: Math.floor(Math.random() * 100) + 1
-    }));
-
-    updatePieChart(sampleData);
-}
-
-
-function generateScatterPlot() {
-    // Generate sample data: an array of objects with 'x' and 'y' properties
-    const sampleData = Array.from({ length: 30 }, () => ({
-        x: Math.random() * 100,
-        y: Math.random() * 100
-    }));
-
-    updateScatterPlot(sampleData);
-}
-
-
-function generateHeatMap() {
-    const sampleData = Array.from({ length: 10 }, () => 
-        Array.from({ length: 10 }, () => Math.random() * 100)
-    );
-    updateHeatMap(sampleData);
-}
-
-function generateAreaPlot() {
-    const sampleData = Array.from({ length: 50 }, (_, i) => ({ x: i, y: Math.random() * 100 }));
-    updateAreaPlot(sampleData);
-}
-
-function generateBoxPlot() {
-    const sampleData = Array.from({ length: 5 }, () => 
-        Array.from({ length: Math.floor(Math.random() * 40 + 10) }, () => Math.random() * 100)
-    );
-    updateBoxPlot(sampleData);
-}
-
-
 // Update functions for each chart type
 function updateBarChart(data, width, height) {
     const svg = d3.select('#barChart svg');
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const margin = { top: 20, right: 0, bottom: 30, left: 0 };
     width = width - margin.left - margin.right;
     height = height - margin.top - margin.bottom;
 
+    // Define 'g' here, so it's available throughout the function
+    const g = svg.selectAll('g').data([null]);
+    const gEnter = g.enter().append('g');
+    gEnter.merge(g).attr('transform');
+
+    
     const xScale = d3.scaleBand()
         .rangeRound([0, width])
         .padding(0.1)
@@ -114,15 +52,58 @@ function updateBarChart(data, width, height) {
     const bars = svg.selectAll('.bar')
         .data(data, (d, i) => i);
 
+    // Create the X-axis
+    const xAxis = d3.axisBottom(xScale);
+
+    // Create the Y-axis
+    const yAxis = d3.axisLeft(yScale);
+
+    // Update or append the X-axis
+    const xAxisGroup = g.selectAll(".x-axis").data([null]);
+    xAxisGroup.enter().append("g")
+        .attr("class", "x-axis")
+        .merge(xAxisGroup)
+        .attr("transform", `translate(0,${height})`)
+        .call(xAxis);
+
+    // Update or append the Y-axis
+    const yAxisGroup = g.selectAll(".y-axis").data([null]);
+    yAxisGroup.enter().append("g")
+        .attr("class", "y-axis")
+        .merge(yAxisGroup)
+        .call(yAxis);
+
+    // Update or append the X-axis label
+    const xAxisLabel = svg.selectAll(".x-axis-label").data([null]);
+    xAxisLabel.enter().append("text")
+        .attr("class", "x-axis-label")
+        .merge(xAxisLabel)
+        .attr("text-anchor", "middle")
+        .attr("x", width / 2)
+        .attr("y", height + margin.top + 20)
+        .text("X-Axis Label");
+
+    // Update or append the Y-axis label
+    const yAxisLabel = svg.selectAll(".y-axis-label").data([null]);
+    yAxisLabel.enter().append("text")
+        .attr("class", "y-axis-label")
+        .merge(yAxisLabel)
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(${margin.left * -1},${(height / 2) + margin.top}) rotate(-90)`)
+        .text("Y-Axis Label");
+
+
     // Enter selection: Initialize new bars
     bars.enter().append('rect')
         .attr('class', 'bar')
         .attr('x', (d, i) => xScale(i))
         .attr('width', xScale.bandwidth())
-        .attr('y', height)
-        .attr('height', 0)
+        .attr('y', d => yScale(d))
+        .attr('height', d => height - yScale(d))
+        .merge(bars)
       .transition()
         .duration(1000)
+        .attr('x', (d, i) => xScale(i))
         .attr('y', d => yScale(d))
         .attr('height', d => height - yScale(d));
 
@@ -141,6 +122,7 @@ function updateBarChart(data, width, height) {
         .attr('y', height)
         .attr('height', 0)
         .remove();
+
 }
 
 function updateLineChart(data, width, height) {
